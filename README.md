@@ -103,7 +103,7 @@ Input messages may have originated from an Angular app or from some timing provi
 
 Decide for yourself whether or not you should *accept* or *drop* incoming traffic via web-socket.
 
-### 4.4 Do the normal manual testing
+#### 4.4 Do the normal manual testing
 
 I have explained above how to connect the apps for the test case.
 But I will not explain here how to do normal manual testing.
@@ -121,18 +121,26 @@ But basically, it goes like this:
 
 ## Comparison notes
 
-Compare this app against similar apps.
-For example, compare `fr-node-server-c` to `fr-node-server-d`.
+Compare this node application to:
+```
+  fr-node-server-a (fr-input-proxy)
+  fr-node-server-b (fr-dummy-proxy)
+//fr-node-server-c (fr-output-proxy) //this app
+  fr-node-server-d (fr-direct-proxy)
+```
+- The level op api support differs between these version.
+- Web-socket may be registered with Input or Output.
+- It may proxy to the Delphi app or implement some api calls in a meaningful way.
 
 ### Api
 - It uses the `request` lib.
 - It uses the dashed-urls.
 
 ### Connections
-- It uses the Dummy class.
-- It uses real tcp input and output connections through the Conn class.
-- It defines request lines, not used.
-- WantRequest is false.
+- It uses the Conn class.
+- It can open real tcp input and output connections through the Conn class.
+- It defines request lines.
+- But WantRequest is false.
 
 ### Web Sockets
 - It has web-socket support.
@@ -142,10 +150,10 @@ For example, compare `fr-node-server-c` to `fr-node-server-d`.
 
 - This is not a production version.
 - It *seems* to work.
-- But there are lots of things to do.
+- There are lots of things to do.
 - I hope you can see where I am heading.
 - Help is welcome.
-- Users are wanted.
+- Users for the fleetrace application are wanted.
 
 ## One of next steps
 - Node proxy should be running on a raspberry pi.

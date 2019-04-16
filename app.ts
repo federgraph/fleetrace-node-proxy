@@ -1,6 +1,6 @@
-﻿ import express = require("express");
- import request = require('request');
- import path = require('path');
+﻿import express = require("express");
+import request = require('request');
+import path = require('path');
 
 import { hostname } from 'os';
 import { Server as HttpServer } from 'http';
@@ -52,9 +52,9 @@ const target = "http://127.0.0.1:8086";
 
 app.use('/', express.static(path.join(__dirname, '..', 'client')));
 
-app.use('/fr', express.static(path.join(__dirname, '..', '..', '..', 'Angular','FR03A1', 'dist', 'FR03A1')));
-//app.use('/freo', express.static(path.join(__dirname, '..', '..', '..', 'Angular','FR03E1', 'dist', 'FR03E1')));
-//app.use('/frac', express.static(path.join(__dirname, '..', '..', '..', 'Angular','FR05I', 'dist', 'FR05I')));
+app.use('/fr', express.static(path.join(__dirname, '..', '..', '..', 'Angular', 'FR03A1', 'dist', 'FR03A1')));
+//app.use('/freo', express.static(path.join(__dirname, '..', '..', '..', 'Angular', 'FR03E1', 'dist', 'FR03E1')));
+//app.use('/frac', express.static(path.join(__dirname, '..', '..', '..', 'Angular', 'FR05I', 'dist', 'FR05I')));
 
 var bodyParser = require('body-parser')
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
@@ -107,47 +107,76 @@ app.post('/ud/3', (req, res) =>  {
 
 //---get-section---
 
+/**
+ * Angular client app queries the parameters of the current event.
+ * (Event is a live sports event, a sailing regatta).
+ * 
+ * The result contains info about race-count, intermediate-timepoint-count, startlist-count.
+ */
 app.get('/api/query-params', (req, res) => request({
     url: target + '/api/query-params',
     method: req.query.method
   }).pipe(res)
-);  
+)
+
+/**
+ * Timing event, originating from Angular client app,
+ * to be passed on to the Delphi result server desktop application.
+ * 
+ * Query params expected for race, it, bib, and option.
+ * All query param values can be parsed into numbers (int).
+ * 
+ * For example: /api/widget/do-timing-event?race=1&it=0&bib=3&option=0
+ * 
+ * Encoded in option is enum value for (time, pos, dns, dnf, dsq, ok, erase)
+ */
+app.get('/api/widget/do-timing-event', (req, res) => request ({
+    url: target + req.url, // with query params for  race, it, bib, option
+    method: req.query.method
+  }).pipe(res)
+)
+
+app.get('/api/manage-clear', (req, res) => request({
+    url: target + req.url,
+    method: req.query.method,
+  }).pipe(res)
+)
 
 app.get('/api/event-data', (req, res) => request({
     url: target + '/api/event-data',
     method: req.query.method
   }).pipe(res)
-);
+)
 
 app.get('/api/race-data-json', (req, res) => request({
     url: target + '/api/race-data-json',
     method: req.query.method
   }).pipe(res)
-);
+)
 
 app.get('/api/rd.json', (req, res) => request({
     url: target + '/api/rd.json',
     method: req.query.method
   }).pipe(res)
-);
+)
 
 app.get('/api/ed.json', (req, res) => request({
     url: target + '/api/ed.json',
     method: req.query.method
   }).pipe(res)
-);
+)
 
 app.get('/ud/2', (req, res) => request({
     url: target + '/ud/2',
     method: req.query.method
   }).pipe(res)
-);
+)
 
 app.get('/ud/3', (req, res) => request({
     url: target + '/ud/3',
     method: req.query.method
   }).pipe(res)
-);
+)
 
 app.get('/api/backlog', (req, res) =>  {
   const sl: string[] = dummy.getBacklog();
@@ -179,22 +208,15 @@ app.get('/api/widget/get-wide-race-table-json', (req, res) => request({
   url: target + req.url,
   method: req.query.method,
 }).pipe(res)
-);
-
-app.get('/api/manage-clear', (req, res) => request({
-    url: target + req.url,
-    method: req.query.method,
-  }).pipe(res)
 )
-
-app.get('/api/widget/do-timing-event', (req, res) => {
-  res.send(okNI);
-})
 
 app.get('/api/widget/get-finish-table-json', (req, res) => {
   res.send(okNI);
 })
 
+/**
+ * Make a tcp connection to Input socket of Delphi application.
+ */
 app.get('/api/input-wire-connect', (req, res) => {
   try {
     iconn.connect();
@@ -245,6 +267,11 @@ app.get('/api/get-output-connection-status', (req, res) => {
   res.send(oconn.getConnectionStatus());
 })
 
+/**
+ * A request for clearing all timing-data from the current event.
+ * 
+ * For testing.
+ */
 app.get('/api/fr-manage-clear', (req, res) => {
   try {
     let msg = requestLine + "Manage.Clear";
@@ -252,11 +279,13 @@ app.get('/api/fr-manage-clear', (req, res) => {
     res.send('called fr-manage-clear');
   }
   catch (e) {
-    res.send('exception in fr-manage-clear');    
+    res.send('exception in fr-manage-clear');
   }
 })
 
 /**
+ * Not used any more.
+ * 
  * This will record a time point event.
  * The time is generated here on the node server!
  * 
@@ -269,10 +298,10 @@ app.get('/api/fr-manage-clear', (req, res) => {
  * if there is an open web socket channel.
  * 
  * The generated msg with the generated time will be returned.
- * (This time will be for the bib (an entry in a race) in race W at time point IT.)
+ * (This time will be for the bib (an entry in a race) in race W (Wettfahrt) at time point IT.)
  * (The client will receive the server generated time immediately.)
  * 
- * Note that the desktop application's response - forwarded via web sockets only - will contain a full report.  
+ * Note that the desktop application's response - forwarded via web sockets only - will contain a full report.
  */
 app.get('/api/widget/time', (req, res) => {
   var race = req.query.race;
@@ -322,6 +351,9 @@ app.get('/api/widget/get-output-netto', (req, res) => {
   }
 })
 
+/**
+ * Could be 'anything', you know what will be a valid msg.
+ */
 app.get('/api/send-msg', (req, res) => {
   var msg = req.query.value;
 
@@ -335,7 +367,7 @@ app.get('/api/send-msg', (req, res) => {
 })
 
 /**
- * start the http server
+ * Start the http server
  */
 const httpServer: HttpServer = app.listen(aport, ahost, () => {
   const ai = httpServer.address();
@@ -345,7 +377,9 @@ const httpServer: HttpServer = app.listen(aport, ahost, () => {
 })
 
 /**
- * start the web socket server - on same port as HTTP server.
+ * Start the web socket server - on same port as HTTP server.
+ * 
+ * (Only some clients will use it.)
  */
 const wsServer: WsServer = new WsServer({ server: httpServer });
 wsServer.on('connection', ws => {
@@ -359,7 +393,9 @@ wsServer.on('connection', ws => {
 })
 
 /**
- * getTime() helper function will generate a time string with 3 digits after the decimal point.
+ * Return a time string with 3 digits after the decimal point.
+ * 
+ * (This is the helper function for /api/widget/time, see above.)
  */
 function getTime() {
   var d = new Date();
@@ -380,8 +416,10 @@ function getTime() {
 }
 
 /**
- * send-msg for FC
- * passes on request.query.value via socket
+ * Send-msg for FC, passes on request.query.value via socket
+ * 
+ * Has nothing to do with fleetrace.
+ * (I have some another app, which needs support from the server.)
  * 
  * @param request.query.value the netto msg to be relayed
  */
@@ -394,12 +432,12 @@ app.get('/api/fc/msg', function (request, response) {
 })
 
 /**
- * Test out if post() works. 
+ * Test out if post() works.
  */
 app.post('/api/widget/test', (req, res) => {
   testCounter++;
   res.send("test-post " + testCounter)
-});
+})
 
 /**
  * Test out if get() works. 
@@ -407,4 +445,4 @@ app.post('/api/widget/test', (req, res) => {
 app.get('/api/widget/test', (req, res) => {
   testCounter++;
   res.send("test-get " + testCounter)
-});
+})
