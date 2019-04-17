@@ -10,6 +10,9 @@ import { Dummy } from './dummy';
 import { ApiRetValue } from './data-model';
 import { Conn } from './conn'
 
+//this is fr-node-server-c
+//alias fr-output-proxy
+
 const ahost = hostname();
 const aport = 3000;
 
@@ -367,7 +370,7 @@ app.get('/api/send-msg', (req, res) => {
 })
 
 /**
- * Start the http server
+ * Start the http server.
  */
 const httpServer: HttpServer = app.listen(aport, ahost, () => {
   const ai = httpServer.address();
@@ -416,7 +419,7 @@ function getTime() {
 }
 
 /**
- * Send-msg for FC, passes on request.query.value via socket
+ * Send-msg for FC, passes on request.query.value via socket.
  * 
  * Has nothing to do with fleetrace.
  * (I have some another app, which needs support from the server.)

@@ -119,7 +119,7 @@ But basically, it goes like this:
 - Input in Angular app will appear in Delphi desktop application.
 - Input in Delphi application will appear in Angular apps, all of them.
 
-## Comparison notes
+## Comparison Notes
 
 Compare this node application to:
 ```
@@ -128,7 +128,7 @@ Compare this node application to:
 //fr-node-server-c (fr-output-proxy) //this app
   fr-node-server-d (fr-direct-proxy)
 ```
-- The level op api support differs between these version.
+- The level of api support differs between these version.
 - Web-socket may be registered with Input or Output.
 - It may proxy to the Delphi app or implement some api calls in a meaningful way.
 

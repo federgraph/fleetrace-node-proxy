@@ -1,4 +1,4 @@
-import * as net from 'net';
+﻿import * as net from 'net';
 import { hostname } from 'os';
 
 export class Conn {
@@ -9,13 +9,13 @@ export class Conn {
 
     socket: net.Socket;
     connected = false;
-    
+
     tmp = Buffer.from("");
     buf = Buffer.from("");
 
     netto: string = "";
     verbose: boolean = false;
-        
+
     connectedApps = new Map<any, number>();
 
     wantRealNetto: boolean = true;
@@ -23,7 +23,7 @@ export class Conn {
     getConnectionStatus() {
       return { 'connected': this.connected, 'websockets': true }
     }
-    
+
     log(s: string) {
         console.log(this.name + ' ' + s);
     }
@@ -90,7 +90,7 @@ export class Conn {
                     d2 = this.buf.indexOf(2);
                     d3 = this.buf.indexOf(3);
                     d4 = this.buf.indexOf(4);
-                    lastd2 = this.buf.lastIndexOf(2);        
+                    lastd2 = this.buf.lastIndexOf(2);
                 }
                 else {
                     d2 = -1;
@@ -113,20 +113,20 @@ export class Conn {
             else
             {
                 this.buf = Buffer.from("");
-                if (this.verbose)                            
+                if (this.verbose)
                     console.log("reset buf");
-            }                    
+            }
         })
 
     }
 
-    disconnect() {        
+    disconnect() {
         this.log('disconnect');
         if (this.socket) {
             this.socket.destroy();
             this.socket = null;
         }
-        this.connected = false;        
+        this.connected = false;
     }
 
     writeToSocket(msg: string) {
